@@ -1,15 +1,15 @@
 package spring.Module31.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.Module31.dao.UserDao;
 import spring.Module31.model.User;
 
-
 import java.util.List;
-@Controller
+
+
+@Service
 public class UserServiceImp implements UserService {
     private final UserDao userDao;
 
@@ -19,22 +19,19 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<User> getUserList(int count) {
-        List<User> users = userDao.listUsers();
-        if (count > users.size()) {
-            count = users.size();
-        }
-        return users.subList(0, count);
+    public List<User> getUserList() {
+        return userDao.listUsers();
     }
+
     @Override
     @Transactional
-    public void addUser (User user) {
+    public void addUser(User user) {
         userDao.add(user);
     }
 
     @Override
     @Transactional
-    public void deleteUser (Long id) {
+    public void deleteUser(Long id) {
         User user = getUserById(id);
         if (user != null) {
             userDao.delete(user);
@@ -42,15 +39,20 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    @Transactional
     public User getUserById(Long id) {
         return userDao.findById(id);
     }
 
     @Override
     @Transactional
-    public void updateUser (User user) {
-        userDao.update(user);
+    public void updateUser(User user) {
+        User existingUser = getUserById(user.getId());
+        if (existingUser != null) {
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setLastName(user.getLastName());
+            existingUser.setEmail(user.getEmail());
+            userDao.update(existingUser);
+        }
     }
 }
 

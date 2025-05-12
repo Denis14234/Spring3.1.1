@@ -1,6 +1,5 @@
 package spring.Module31.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,32 +26,26 @@ public class UserController {
     }
 
     @GetMapping(value = "/users")
-    public String printUsers(@RequestParam(defaultValue = "5") int count, ModelMap model) {
-        model.addAttribute("users", userService.getUserList(count));
+    public String printUsers(ModelMap model) {
+        model.addAttribute("users", userService.getUserList());
         return "users";
     }
 
     @PostMapping(value = "/users/add")
-    public String addUser (@ModelAttribute User user) {
-        userService.addUser (user);
+    public String addUser(@ModelAttribute User user) {
+        userService.addUser(user);
         return "redirect:/users";
     }
 
     @PostMapping(value = "/users/delete")
-    public String deleteUser (@RequestParam Long id) {
-        userService.deleteUser (id);
+    public String deleteUser(@RequestParam Long id) {
+        userService.deleteUser(id);
         return "redirect:/users";
     }
 
     @PostMapping(value = "/users/update")
-    public String updateUser (@ModelAttribute User user) {
-        User existingUser  = userService.getUserById(user.getId());
-        if (existingUser  != null) {
-            existingUser .setFirstName(user.getFirstName());
-            existingUser .setLastName(user.getLastName());
-            existingUser .setEmail(user.getEmail());
-            userService.updateUser (existingUser );
-        }
+    public String updateUser(@ModelAttribute User user) {
+        userService.updateUser(user);
         return "redirect:/users";
     }
 }
